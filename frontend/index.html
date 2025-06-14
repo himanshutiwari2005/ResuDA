@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resume Scorer</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen flex items-center justify-center px-4">
+
+  <div class="bg-white p-8 rounded-2xl shadow-lg max-w-md w-full">
+    <h1 class="text-2xl font-bold text-center mb-6">📄 Resume Scorer</h1>
+
+    <form id="uploadForm" class="space-y-4">
+      <input type="file" name="resume" id="resume" accept=".pdf"
+        class="block w-full text-sm text-gray-500
+               file:mr-4 file:py-2 file:px-4
+               file:rounded-full file:border-0
+               file:text-sm file:font-semibold
+               file:bg-blue-50 file:text-blue-700
+               hover:file:bg-blue-100"/>
+
+      <button type="submit"
+        class="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-xl hover:bg-blue-700 transition">
+        Submit Resume
+      </button>
+    </form>
+  </div>
+
+  <!-- Modal -->
+  <div id="resultModal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center hidden">
+    <div class="bg-white rounded-xl p-6 w-full max-w-md shadow-xl">
+      <h2 class="text-xl font-bold mb-4 text-green-600">✅ Resume Evaluated</h2>
+      <p><strong>Score:</strong> <span id="score" class="font-mono"></span></p>
+      <p><strong>IPFS CID:</strong> <span id="cid" class="text-sm break-all"></span></p>
+      <p><strong>Tx Hash:</strong> <a id="tx" href="#" target="_blank" class="text-blue-500 break-all"></a></p>
+
+      <button onclick="closeModal()"
+        class="mt-4 w-full bg-gray-800 text-white py-2 rounded-lg hover:bg-gray-900">
+        Close
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById("uploadForm");
+    const modal = document.getElementById("resultModal");
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const file = document.getElementById("resume").files[0];
+      if (!file) return alert("Please upload a PDF resume.");
+
+      const formData = new FormData();
+      formData.append("resume", file);
+
+      try {
+        const res = await fetch("http://127.0.0.1:5000/submit-resume", {
+          method: "POST",
+          body: formData
+        });
+
+        if (!res.ok) throw new Error("Failed to upload");
+
+        const data = await res.json();
+
+        document.getElementById("score").textContent = data.score;
+        document.getElementById("cid").textContent = data.ipfs_cid;
+        document.getElementById("tx").textContent = data.tx_hash;
+
+        modal.classList.remove("hidden");
+      } catch (err) {
+        alert(err);
+        console.error(err);
+      }
+    });
+
+    function closeModal() {
+      modal.classList.add("hidden");
+    }
+  </script>
+</body>
+</html>
