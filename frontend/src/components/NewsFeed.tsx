@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { Loader2, Zap, LayoutDashboard, Radio } from 'lucide-react'
+import { Loader2, LayoutDashboard, Radio } from 'lucide-react'
 
 export function NewsFeed({ onSelectNews }: { onSelectNews: (news: any) => void }) {
   const [selectedId, setSelectedId] = useState<number | null>(null)
@@ -20,8 +20,6 @@ export function NewsFeed({ onSelectNews }: { onSelectNews: (news: any) => void }
         setNewsList(data)
         if (data.length > 0) {
           setSelectedId(data[0].id)
-          // Don't auto-select the first one for analysis to avoid overload, 
-          // but show it in the feed
         }
       } catch (err: any) {
         setError(err.message)
@@ -35,8 +33,23 @@ export function NewsFeed({ onSelectNews }: { onSelectNews: (news: any) => void }
   if (loading) {
     return (
       <div className="col-span-12 lg:col-span-12 xl:col-span-7 space-y-4">
-        {[1, 2, 3, 4].map((i) => (
-          <div key={i} className="news-panel p-4 rounded-xl h-24 animate-pulse" />
+        <div className="news-panel p-6 flex items-center gap-3">
+          <Loader2 className="w-5 h-5 animate-spin opacity-70" />
+          <span
+            className="text-[11px] uppercase tracking-widest opacity-70"
+            style={{ fontFamily: 'var(--font-ui)' }}
+          >
+            Typesetting wire feed...
+          </span>
+        </div>
+        {[1, 2, 3].map((i) => (
+          <div key={i} className="news-panel p-4 h-28">
+            <div className="h-full flex flex-col justify-between">
+              <div className="w-40 border-t border-[color:var(--rule)]" />
+              <div className="w-full border-t border-[color:var(--rule)]" />
+              <div className="w-3/4 border-t border-[color:var(--rule)]" />
+            </div>
+          </div>
         ))}
       </div>
     )
@@ -44,76 +57,88 @@ export function NewsFeed({ onSelectNews }: { onSelectNews: (news: any) => void }
 
   if (error) {
     return (
-      <div className="col-span-12 lg:col-span-12 xl:col-span-7 p-6 bg-red-500/10 border border-red-500/20 rounded-2xl">
-        <p className="text-red-400 font-bold uppercase tracking-widest text-xs">Feed Sync Error: {error}</p>
+      <div className="col-span-12 lg:col-span-12 xl:col-span-7">
+        <div className="news-panel p-6">
+          <p
+            className="text-xs uppercase tracking-widest"
+            style={{ fontFamily: 'var(--font-ui)' }}
+          >
+            Feed Sync Error: {error}
+          </p>
+        </div>
       </div>
     )
   }
 
   return (
-    <section className="col-span-12 lg:col-span-12 xl:col-span-7 space-y-4 max-h-[800px] overflow-y-auto custom-scrollbar pr-4">
+    <section className="col-span-12 lg:col-span-12 xl:col-span-7 space-y-4 max-h-[800px] overflow-y-auto custom-scrollbar pr-2">
       {newsList.map((news, index) => (
-        <motion.div
+        <motion.article
           key={news.id}
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ delay: index * 0.05 }}
-          className={`group news-panel p-4 rounded-2xl flex gap-6 cursor-default relative overflow-hidden ${
-            selectedId === news.id ? 'border-violet-500/40 bg-violet-600/5' : ''
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: index * 0.04 }}
+          className={`news-panel p-4 flex gap-4 relative ${
+            selectedId === news.id ? 'border-[color:var(--rule-strong)] bg-[color:var(--soft-tint)]' : ''
           }`}
         >
-          {/* Broadcaster Segment Header */}
-          <div className="absolute top-0 right-0 p-3 flex gap-2">
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded bg-white/5 border border-white/5">
-                <Radio className="w-2.5 h-2.5 text-violet-400" />
-                <span className="text-[8px] font-black uppercase tracking-widest text-white/30">Live Segment</span>
-            </div>
+          {/* Segment meta */}
+          <div className="absolute top-2 right-2 px-2 py-1 border border-[color:var(--rule)] flex items-center gap-1.5">
+            <Radio className="w-3 h-3 opacity-70" />
+            <span
+              className="text-[9px] uppercase tracking-widest opacity-65"
+              style={{ fontFamily: 'var(--font-ui)' }}
+            >
+              Live Segment
+            </span>
           </div>
 
           {/* Thumbnail */}
-          <div className="w-32 h-32 rounded-xl overflow-hidden flex-shrink-0 border border-white/10 relative">
-            <img src={news.image} alt={news.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-            <div className="absolute inset-0 bg-black/20" />
+          <div className="w-28 h-28 overflow-hidden flex-shrink-0 border border-[color:var(--rule)]">
+            <img src={news.image} alt={news.title} className="w-full h-full object-cover grayscale" />
           </div>
 
           {/* Content */}
-          <div className="flex-1 flex flex-col justify-between py-1">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-violet-400">
-                  {news.category}
-                </span>
-                <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest leading-none">•</span>
-                <span className="text-[10px] font-bold text-white/30 uppercase tracking-widest leading-none">
-                  {news.source}
-                </span>
+          <div className="flex-1 flex flex-col justify-between py-0.5 min-w-0">
+            <div className="space-y-1.5 pr-20">
+              <div
+                className="flex items-center gap-2 text-[10px] uppercase tracking-widest opacity-70"
+                style={{ fontFamily: 'var(--font-ui)' }}
+              >
+                <span>{news.category}</span>
+                <span>•</span>
+                <span>{news.source}</span>
               </div>
-              <h3 className="text-lg font-black tracking-tight text-white leading-tight line-clamp-2 pr-20">
+
+              <h3
+                className="text-xl leading-tight line-clamp-2"
+                style={{ fontFamily: 'var(--font-head)' }}
+              >
                 {news.title}
               </h3>
             </div>
 
-            {/* Noticeable but Professional Action */}
-            <div className="flex items-center justify-between mt-4 pb-1">
-               <span className="text-[10px] font-bold text-white/20 uppercase tracking-widest">
-                  Extracted: {new Date(news.date).toLocaleDateString()}
-               </span>
-               <button
-                  onClick={() => {
-                    setSelectedId(news.id)
-                    onSelectNews(news)
-                  }}
-                  className="group/btn relative overflow-hidden px-6 py-2 rounded-lg border border-white/10 bg-white/5 hover:border-violet-500/50 hover:bg-violet-600/10 transition-all duration-300"
-               >
-                  <div className="scan-line group-hover/btn:opacity-100 opacity-0 transition-opacity" />
-                  <div className="flex items-center gap-2 text-xs font-black uppercase tracking-[0.1em] text-white/60 group-hover/btn:text-white transition-colors">
-                     <LayoutDashboard className="w-3.5 h-3.5" />
-                     Analyze Context
-                  </div>
-               </button>
+            <div className="flex items-center justify-between mt-4 pt-3 border-t border-[color:var(--rule)]">
+              <span
+                className="text-[10px] uppercase tracking-widest opacity-60"
+                style={{ fontFamily: 'var(--font-ui)' }}
+              >
+                Extracted: {new Date(news.date).toLocaleDateString()}
+              </span>
+
+              <button
+                onClick={() => {
+                  setSelectedId(news.id)
+                  onSelectNews(news)
+                }}
+                className="glass-button"
+              >
+                <LayoutDashboard className="w-3.5 h-3.5" />
+                Analyze Context
+              </button>
             </div>
           </div>
-        </motion.div>
+        </motion.article>
       ))}
     </section>
   )

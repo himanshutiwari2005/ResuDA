@@ -1,95 +1,280 @@
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 :root {
-  /* Monad Signature Palette - Violet & Berry */
-  --monad-violet: #8364e8;
-  --monad-berry: #d058a1;
-  --monad-dark: #0a0a0c;
-  --monad-deep: #16161a;
-  --glass-border: rgba(255, 255, 255, 0.08);
-  --glass-bg: rgba(255, 255, 255, 0.03);
+  /* Vintage Newspaper Palette */
+  --paper: #f5f1e8;
+  --paper-deep: #ece7dc;
+  --ink: #111111;
+  --muted-ink: rgba(17, 17, 17, 0.72);
+  --rule: rgba(17, 17, 17, 0.42);
+  --rule-strong: rgba(17, 17, 17, 0.82);
+  --soft-tint: rgba(17, 17, 17, 0.04);
+
+  --font-head: "Playfair Display", "Times New Roman", Times, serif;
+  --font-body: "Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-ui: "IBM Plex Mono", "Courier New", Courier, monospace;
+}
+
+html,
+body {
+  min-height: 100%;
 }
 
 body {
-  background-color: var(--monad-dark);
-  color: white;
+  background-color: var(--paper);
+  color: var(--ink);
   overflow-x: hidden;
-  font-family: 'Inter', sans-serif;
+  font-family: var(--font-body);
+  line-height: 1.45;
+  letter-spacing: 0.01em;
+  text-rendering: optimizeLegibility;
+
+  /* Slightly aged paper texture, flat and subtle */
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      rgba(17, 17, 17, 0.015) 0px,
+      rgba(17, 17, 17, 0.015) 1px,
+      transparent 1px,
+      transparent 11px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      rgba(17, 17, 17, 0.01) 0px,
+      rgba(17, 17, 17, 0.01) 1px,
+      transparent 1px,
+      transparent 15px
+    );
 }
 
-/* Newsroom Window Aesthetic */
+/* Global flat editorial constraints */
+* {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  background: var(--soft-tint);
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid var(--rule);
+}
+
+/* Newsroom Window Aesthetic (re-themed as print blocks) */
 @layer components {
   .news-panel {
-    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl transition-all duration-300;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    @apply border transition-colors duration-200;
+    border-color: var(--rule);
+    background: transparent;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
   }
-  
+
   .news-panel-hover {
-    @apply hover:border-violet-500/40 hover:bg-white/[0.05] hover:shadow-violet-500/5;
+    @apply hover:bg-transparent;
+  }
+
+  .news-panel-hover:hover {
+    border-color: var(--rule-strong);
+    background: var(--soft-tint);
   }
 
   .glass-button {
-    @apply px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all font-bold text-xs uppercase tracking-widest flex items-center gap-2;
+    @apply px-4 py-2 text-xs uppercase tracking-widest flex items-center gap-2;
+    font-family: var(--font-ui);
+    font-weight: 500;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink);
+    box-shadow: none !important;
+    backdrop-filter: none !important;
+  }
+
+  .glass-button:hover {
+    background: var(--soft-tint);
+    border-color: var(--rule-strong);
   }
 
   .accent-glow {
-    @apply relative after:absolute after:inset-0 after:bg-violet-500/20 after:blur-[40px] after:-z-10;
+    position: relative;
+  }
+
+  .accent-glow::after {
+    content: none !important;
   }
 }
 
-/* Ticker Animation */
+/* Ticker Animation (kept, toned down) */
 @keyframes scroll {
-  0% { transform: translateX(0); }
-  100% { transform: translateX(-50%); }
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
 }
 
 .animate-ticker {
-  animation: scroll 40s linear infinite;
+  animation: scroll 55s linear infinite;
   display: flex;
   white-space: nowrap;
+  font-family: var(--font-ui);
+  color: var(--muted-ink);
 }
 
-/* Scan Animation for Bias Button */
+/* Scan Animation (neutral monochrome) */
 @keyframes scan {
-  0% { top: -100%; }
-  100% { top: 100%; }
+  0% {
+    top: -100%;
+  }
+  100% {
+    top: 100%;
+  }
 }
 
 .scan-line {
-  @apply absolute left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-violet-500/20 to-transparent;
-  animation: scan 2s linear infinite;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 1px;
+  background: rgba(17, 17, 17, 0.2);
+  animation: scan 2.5s linear infinite;
   z-index: 10;
   pointer-events: none;
 }
 
-/* Deep Background Glows */
+/* Replace glows with subtle paper panels */
+.bg-glow-violet,
+.bg-glow-berry {
+  position: fixed;
+  inset: auto;
+  width: 42%;
+  height: 28%;
+  z-index: -20;
+  filter: none;
+  background: rgba(17, 17, 17, 0.025);
+  border: 1px solid rgba(17, 17, 17, 0.08);
+}
+
 .bg-glow-violet {
-  @apply fixed -top-[20%] -left-[10%] w-[60%] h-[60%] bg-violet-600/10 blur-[150px] -z-20;
+  top: 4%;
+  left: 3%;
 }
 
 .bg-glow-berry {
-  @apply fixed -bottom-[20%] -right-[10%] w-[60%] h-[60%] blur-[150px] -z-20;
-  background-color: rgba(208, 88, 161, 0.1);
+  right: 3%;
+  bottom: 4%;
 }
 
+/* Scrollbar: thin print-like */
 .custom-scrollbar::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 .custom-scrollbar::-webkit-scrollbar-track {
-  @apply bg-transparent;
+  background: transparent;
 }
 .custom-scrollbar::-webkit-scrollbar-thumb {
-  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+  background: rgba(17, 17, 17, 0.25);
+  border-radius: 0;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(17, 17, 17, 0.4);
 }
 
-/* Text Shimmer Effect */
+/* Disable bright shimmer; keep text readable */
 .shimmer-text {
-  @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white/70 to-white bg-[length:200%_100%] animate-[shimmer_3s_infinite];
+  color: var(--ink) !important;
+  background: none !important;
+  -webkit-text-fill-color: var(--ink);
+  animation: none !important;
 }
 
-@keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+/* Newspaper layout helpers (for shared reuse across pages/components) */
+.paper {
+  min-height: 100vh;
+  display: grid;
+  grid-template-rows: auto auto 1fr auto;
+}
+
+.top-strip {
+  border-bottom: 1px solid var(--rule-strong);
+  padding: 6px 12px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.meta-row {
+  border-top: 1px solid var(--rule);
+  border-bottom: 1px solid var(--rule);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--muted-ink);
+}
+
+.mast-title {
+  font-family: var(--font-head);
+  text-align: center;
+  font-size: clamp(34px, 4.5vw, 64px);
+  margin: 10px 0 0;
+  line-height: 1.05;
+}
+
+.mast-tagline {
+  font-family: var(--font-ui);
+  text-align: center;
+  font-size: 12px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted-ink);
+}
+
+.news-grid {
+  display: grid;
+  grid-template-columns: 1.05fr 1.9fr 1.05fr;
+  border-top: 1px solid var(--rule);
+}
+
+.news-grid > * + * {
+  border-left: 1px solid var(--rule);
+}
+
+.section-title {
+  font-family: var(--font-head);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.status-bar {
+  border-top: 1px solid var(--rule-strong);
+  padding: 8px 12px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  background: rgba(17, 17, 17, 0.02);
+}
+
+@media (max-width: 980px) {
+  .news-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .news-grid > * + * {
+    border-left: 0;
+    border-top: 1px solid var(--rule);
+  }
 }

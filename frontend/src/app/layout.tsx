@@ -1,13 +1,11 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "./providers";
 
-const inter = Inter({ subsets: ["latin"] });
-
 export const metadata: Metadata = {
   title: "NewsChecker | Web3 AI Bias Check",
-  description: "Identify bias and misinterpreted lines in news with decentralized community notes on Monad.",
+  description:
+    "Identify bias and misinterpreted lines in news with decentralized community notes on Monad.",
 };
 
 export default function RootLayout({
@@ -15,23 +13,44 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const now = new Date();
+  const dateLabel = now.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  });
+
   return (
-    <html lang="en" className="dark">
-      <body className={`${inter.className} bg-slate-950 text-slate-200 min-h-screen antialiased`}>
+    <html lang="en">
+      <body className="min-h-screen antialiased">
         <Providers>
-          <div className="relative isolate overflow-hidden">
-            {/* Background patterns */}
-            <div className="absolute inset-x-0 -top-40 -z-10 transform-gpu overflow-hidden blur-3xl sm:-top-80" aria-hidden="true">
-              <div className="relative left-[calc(50%-11rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 rotate-[30deg] bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%-30rem)] sm:w-[72.1875rem]"></div>
+          <div className="paper">
+            <div className="top-strip flex items-center justify-between gap-3">
+              <span>PRESS WIRE / LIVE DESK</span>
+              <span>SYSTEM: MONOCHROME</span>
             </div>
 
-            <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <header className="px-3 sm:px-4 lg:px-6 pt-3 pb-2">
+              <div className="meta-row grid grid-cols-2 sm:grid-cols-4 gap-2 px-2 py-2">
+                <span>DATE: {dateLabel}</span>
+                <span>EDITION: DIGITAL</span>
+                <span>LOCATION: GLOBAL DESK</span>
+                <span>PRICE: $0.05</span>
+              </div>
+
+              <h1 className="mast-title">THE NEWSCHECKER TIMES</h1>
+              <p className="mast-tagline">BIAS ANALYSIS • COMMUNITY NOTES • LIVE TYPESET</p>
+              <hr className="mt-2 mb-0" />
+            </header>
+
+            <main className="w-full max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 py-4">
               {children}
             </main>
 
-            <div className="absolute inset-x-0 top-[calc(100%-13rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]" aria-hidden="true">
-              <div className="relative left-[calc(50%+3rem)] aspect-[1155/678] w-[36.125rem] -translate-x-1/2 bg-gradient-to-tr from-[#ff80b5] to-[#9089fc] opacity-20 sm:left-[calc(50%+36rem)] sm:w-[72.1875rem]"></div>
-            </div>
+            <footer className="status-bar flex items-center justify-between gap-3">
+              <span>PRESS STATUS: RUNNING</span>
+              <span className="opacity-75">TYPESETTING EDITION...</span>
+            </footer>
           </div>
         </Providers>
       </body>

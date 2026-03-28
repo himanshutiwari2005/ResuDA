@@ -1,70 +1,72 @@
 'use client'
 
-import { motion } from 'framer-motion'
 import { ConnectKitButton } from 'connectkit'
-import { Zap, ShieldCheck, Activity } from 'lucide-react'
+import { ShieldCheck, Activity } from 'lucide-react'
 
 export function Navbar() {
   return (
-    <nav className="sticky top-0 z-[100] w-full border-b border-white/[0.08] bg-black/60 backdrop-blur-2xl">
-      <div className="max-w-[1400px] mx-auto px-6 h-20 flex items-center justify-between">
-        {/* Brand/Logo Section */}
-        <div className="flex items-center gap-8">
-          <motion.div
-            whileHover={{ scale: 1.05 }}
-            className="flex items-center gap-3 cursor-pointer"
-          >
-            <div className="p-2.5 rounded-xl bg-violet-600/20 border border-violet-500/30 shadow-[0_0_20px_rgba(131,100,232,0.2)]">
-              <ShieldCheck className="w-7 h-7 text-violet-400" />
+    <nav className="sticky top-0 z-[100] w-full border-b border-[color:var(--rule)] bg-[color:var(--paper)]">
+      <div className="max-w-[1400px] mx-auto px-3 sm:px-4 lg:px-6 h-16 flex items-center justify-between gap-4">
+        {/* Brand / Mast section */}
+        <div className="flex items-center gap-4 min-w-0">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 border border-[color:var(--rule)] flex items-center justify-center">
+              <ShieldCheck className="w-4 h-4 opacity-80" />
             </div>
-            <div className="flex flex-col">
-              <span className="text-xl font-black tracking-tighter shimmer-text">
-                ResuDA
+            <div className="flex flex-col leading-none">
+              <span
+                className="text-lg sm:text-xl tracking-tight"
+                style={{ fontFamily: 'var(--font-head)' }}
+              >
+                NewsChecker
               </span>
-              <span className="text-[10px] uppercase tracking-[0.3em] text-violet-400 font-bold -mt-1">
-                News Integrity
+              <span
+                className="text-[10px] uppercase tracking-[0.18em] opacity-65"
+                style={{ fontFamily: 'var(--font-ui)' }}
+              >
+                News Integrity Desk
               </span>
             </div>
-          </motion.div>
+          </div>
 
-          {/* Broadcast Status (Hidden on mobile) */}
-          <div className="hidden md:flex items-center gap-4 pl-8 border-l border-white/10">
-            <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-white/40">Network: Monad Testnet</span>
+          <div className="hidden md:flex items-center gap-3 pl-4 border-l border-[color:var(--rule)]">
+            <div
+              className="px-2 py-1 border border-[color:var(--rule)] text-[10px] uppercase tracking-widest opacity-70"
+              style={{ fontFamily: 'var(--font-ui)' }}
+            >
+              Network: Monad Testnet
             </div>
-            <div className="flex items-center gap-2 px-3 py-1 rounded-md bg-white/5 border border-white/10">
-              <Activity className="w-3 h-3 text-violet-400" />
-              <span className="text-[10px] uppercase font-bold tracking-widest text-white/40">Chain ID: 10143</span>
+            <div
+              className="px-2 py-1 border border-[color:var(--rule)] text-[10px] uppercase tracking-widest opacity-70 flex items-center gap-1.5"
+              style={{ fontFamily: 'var(--font-ui)' }}
+            >
+              <Activity className="w-3 h-3" />
+              Chain ID: 10143
             </div>
           </div>
         </div>
 
-        {/* Right Section: Actions */}
-        <div className="flex items-center gap-6">
-          <div className="hidden lg:flex items-center gap-1.5 px-4 py-2 rounded-full bg-violet-500/10 border border-violet-500/20 text-violet-400 text-xs font-bold tracking-widest uppercase">
-            <Zap className="w-4 h-4 fill-current" />
-            AI Live Analysis Available
-          </div>
-
-          <div className="h-10 w-px bg-white/10" />
-
+        {/* Wallet action */}
+        <div className="flex items-center gap-3">
           <ConnectKitButton.Custom>
-            {({ isConnected, isConnecting, show, truncatedAddress, ensName }) => {
-              return (
-                <button
-                  onClick={show}
-                  className={`group relative flex items-center gap-2 px-5 py-2.5 rounded-xl border transition-all duration-300 font-bold text-xs uppercase tracking-widest overflow-hidden ${isConnected
-                      ? 'border-violet-500/40 bg-violet-600/10 text-white'
-                      : 'border-white/10 bg-white/5 hover:border-violet-500/60 hover:bg-violet-600/20 text-white/60 hover:text-white'
-                    }`}
-                >
-                  <div className="w-2 h-2 rounded-full bg-violet-400 shadow-[0_0_10px_rgba(131,100,232,1)]" />
-                  {isConnected ? (ensName ?? truncatedAddress) : 'Commence Control'}
-                  <div className="absolute inset-0 bg-gradient-to-r from-violet-600/0 via-violet-600/10 to-violet-600/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
-                </button>
-              )
-            }}
+            {({ isConnected, show, truncatedAddress, ensName, isConnecting }) => (
+              <button
+                onClick={show}
+                className="glass-button hover:bg-[color:var(--soft-tint)] transition-colors"
+              >
+                <span
+                  className="inline-block w-1.5 h-1.5 bg-black/70"
+                  aria-hidden
+                />
+                <span>
+                  {isConnecting
+                    ? 'Connecting...'
+                    : isConnected
+                    ? (ensName ?? truncatedAddress)
+                    : 'Connect Wallet'}
+                </span>
+              </button>
+            )}
           </ConnectKitButton.Custom>
         </div>
       </div>
