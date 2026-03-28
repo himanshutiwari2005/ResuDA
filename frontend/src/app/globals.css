@@ -3,62 +3,93 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 255, 255, 255;
-  --background-start-rgb: 2, 6, 23;
-  --background-end-rgb: 15, 23, 42;
+  /* Monad Signature Palette - Violet & Berry */
+  --monad-violet: #8364e8;
+  --monad-berry: #d058a1;
+  --monad-dark: #0a0a0c;
+  --monad-deep: #16161a;
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-bg: rgba(255, 255, 255, 0.03);
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: var(--monad-dark);
+  color: white;
+  overflow-x: hidden;
+  font-family: 'Inter', sans-serif;
 }
 
-@layer utilities {
-  .text-balance {
-    text-wrap: balance;
+/* Newsroom Window Aesthetic */
+@layer components {
+  .news-panel {
+    @apply bg-white/[0.03] backdrop-blur-xl border border-white/[0.08] shadow-2xl transition-all duration-300;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
   }
   
-  .glass {
-    @apply bg-white/5 backdrop-blur-xl border border-white/10 shadow-2xl;
+  .news-panel-hover {
+    @apply hover:border-violet-500/40 hover:bg-white/[0.05] hover:shadow-violet-500/5;
   }
-  
-  .glass-hover {
-    @apply hover:bg-white/10 hover:border-white/20 transition-all duration-300;
+
+  .glass-button {
+    @apply px-4 py-2 bg-white/5 border border-white/10 rounded-lg backdrop-blur-md hover:bg-white/10 hover:border-white/20 transition-all font-bold text-xs uppercase tracking-widest flex items-center gap-2;
   }
-  
-  .premium-gradient {
-    @apply bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600;
+
+  .accent-glow {
+    @apply relative after:absolute after:inset-0 after:bg-violet-500/20 after:blur-[40px] after:-z-10;
   }
 }
 
-.animate-glow {
-  animation: glow 4s ease-in-out infinite;
+/* Ticker Animation */
+@keyframes scroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
 }
 
-@keyframes glow {
-  0%, 100% { opacity: 0.3; transform: scale(1); }
-  50% { opacity: 0.6; transform: scale(1.1); }
+.animate-ticker {
+  animation: scroll 40s linear infinite;
+  display: flex;
+  white-space: nowrap;
 }
 
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 8px;
+/* Scan Animation for Bias Button */
+@keyframes scan {
+  0% { top: -100%; }
+  100% { top: 100%; }
 }
 
-::-webkit-scrollbar-track {
-  background: transparent;
+.scan-line {
+  @apply absolute left-0 w-full h-1/2 bg-gradient-to-b from-transparent via-violet-500/20 to-transparent;
+  animation: scan 2s linear infinite;
+  z-index: 10;
+  pointer-events: none;
 }
 
-::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.1);
-  border-radius: 20px;
+/* Deep Background Glows */
+.bg-glow-violet {
+  @apply fixed -top-[20%] -left-[10%] w-[60%] h-[60%] bg-violet-600/10 blur-[150px] -z-20;
 }
 
-::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.2);
+.bg-glow-berry {
+  @apply fixed -bottom-[20%] -right-[10%] w-[60%] h-[60%] blur-[150px] -z-20;
+  background-color: rgba(208, 88, 161, 0.1);
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  @apply bg-white/10 rounded-full hover:bg-white/20 transition-colors;
+}
+
+/* Text Shimmer Effect */
+.shimmer-text {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-white via-white/70 to-white bg-[length:200%_100%] animate-[shimmer_3s_infinite];
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
 }

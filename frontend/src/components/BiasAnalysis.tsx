@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { AlertTriangle, Info, Loader2, Sparkles, Quote } from 'lucide-react'
+import { AlertTriangle, Info, Loader2, Sparkles, Quote, MessageSquare } from 'lucide-react'
 import axios from 'axios'
 
 interface BiasReport {
@@ -63,24 +63,28 @@ export function BiasAnalysis({ news }: { news: any }) {
       className="space-y-8"
     >
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="md:col-span-2 bg-slate-900/60 p-8 rounded-3xl border border-white/10 shadow-3xl hover:border-blue-500/20 transition-all">
-          <div className="flex items-center gap-2 mb-6 text-blue-400 font-semibold tracking-wider">
-            <Quote className="w-5 h-5 fill-current" />
-            <span>AI ANALYSIS SUMMARY</span>
+        <div className="md:col-span-2 news-panel p-8 rounded-3xl space-y-8">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-violet-600/20 border border-violet-500/30">
+                <MessageSquare className="w-6 h-6 text-violet-400" />
+              </div>
+              <h3 className="text-xl font-black tracking-tight text-white uppercase">AI Analysis Summary</h3>
+            </div>
           </div>
-          <p className="text-xl text-slate-200 leading-relaxed font-light italic">
+          <p className="text-xl text-white/90 leading-relaxed font-light italic">
             "{report?.summary}"
           </p>
         </div>
 
-        <div className="bg-slate-900/60 p-8 rounded-3xl border border-white/10 flex flex-col items-center justify-center relative overflow-hidden group">
+        <div className="news-panel p-8 rounded-3xl flex flex-col items-center justify-center relative overflow-hidden group">
           <div className="relative z-20 text-center">
-            <span className="text-xs uppercase tracking-[0.2em] text-slate-500 block mb-2">Bias Index</span>
+            <span className="text-[10px] uppercase tracking-[0.3em] text-white/20 font-black block mb-2">Bias Index</span>
             <div className="text-6xl font-black text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
               {report?.biasScore}%
             </div>
-            <div className={`text-xs mt-2 font-bold uppercase tracking-wider ${report!.biasScore > 50 ? 'text-red-400' : 'text-emerald-400'}`}>
-              {report!.biasScore > 50 ? 'High Bias' : 'Low Bias'}
+            <div className={`text-[10px] mt-2 font-black uppercase tracking-widest ${report!.biasScore > 50 ? 'text-red-400' : 'text-emerald-400'}`}>
+              {report!.biasScore > 50 ? 'Critical Bias' : 'Neutral Status'}
             </div>
           </div>
           <div 
