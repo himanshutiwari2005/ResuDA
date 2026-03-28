@@ -1,0 +1,11 @@
+# Foundry Build Artifacts
+out/
+cache/
+broadcast/
+
+# Foundry Libraries
+lib/
+
+# Local Environment
+.env
+.env.*

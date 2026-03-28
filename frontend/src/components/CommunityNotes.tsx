@@ -6,7 +6,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { ThumbsUp, ThumbsDown, Send, User, ShieldCheck, Loader2, Coins, Flame } from 'lucide-react'
 import { parseEther } from 'viem'
 
-const CONTRACT_ADDRESS = '0x1234567890123456789012345678901234567890' // Placeholder
+const CONTRACT_ADDRESS = '0x266BF8b803351FDFB01De8A6c33E18cFB07D9790'
 
 const ABI = [
   {"inputs":[{"internalType":"uint256","name":"_newsId","type":"uint256"}],"name":"getNotesForNews","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},
