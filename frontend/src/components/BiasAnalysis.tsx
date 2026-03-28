@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { AlertTriangle, CheckCircle2, Info, ChevronRight, Loader2, Sparkles, Quote } from 'lucide-react'
+import { AlertTriangle, Info, Loader2, Sparkles, Quote } from 'lucide-react'
 import axios from 'axios'
 
 interface BiasReport {

@@ -1,90 +1,126 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { ExternalLink, MessageSquare, AlertCircle } from 'lucide-react'
-
-const MOCK_NEWS = [
-  {
-    id: 1,
-    title: "Global Tech Summit 2026: The Rise of Sovereign AI",
-    summary: "Leading nations gather to discuss the importance of decentralized AI infrastructure to preserve national digital sovereignty.",
-    url: "https://example.com/tech-summit",
-    source: "TechDaily",
-    timestamp: "2 hours ago",
-    category: "Technology"
-  },
-  {
-    id: 2,
-    title: "Monad Blockchain Reaches Record High Throughput in Testnet",
-    summary: "The Monad testnet has surpassed initial expectations, demonstrating parallel execution capabilities that outshine traditional EVMs.",
-    url: "https://example.com/monad-news",
-    source: "CryptoWeek",
-    timestamp: "4 hours ago",
-    category: "Web3"
-  },
-  {
-    id: 3,
-    title: "New Climate Policy Sparks Controversy in European Parliament",
-    summary: "A proposed bill aiming for zero emissions by 2040 faces stiff opposition from manufacturing hubs over economic concerns.",
-    url: "https://example.com/climate-policy",
-    source: "GlobalGazette",
-    timestamp: "6 hours ago",
-    category: "Politics"
-  }
-]
+import { Loader2 } from 'lucide-react'
 
 export function NewsFeed({ onSelectNews }: { onSelectNews: (news: any) => void }) {
+  const [selectedNews, setSelectedNews] = useState<any>(null)
+  const [newsList, setNewsList] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const fetchNews = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/news')
+        if (!response.ok) throw new Error('Failed to fetch news')
+        const data = await response.json()
+        setNewsList(data)
+        if (data.length > 0) {
+          setSelectedNews(data[0])
+          onSelectNews(data[0])
+        }
+      } catch (err: any) {
+        setError(err.message)
+      } finally {
+        setLoading(false)
+      }
+    }
+    fetchNews()
+  }, [onSelectNews])
+
+  const handleSelect = (news: any) => {
+    setSelectedNews(news)
+    onSelectNews(news)
+  }
+
+  if (loading) {
+    return (
+      <section className="col-span-12 lg:col-span-5 space-y-4">
+        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 h-64 animate-pulse flex items-center justify-center">
+            <Loader2 className="w-8 h-8 text-blue-500 animate-spin" />
+        </div>
+        <div className="space-y-4">
+          {[1, 2, 3].map((i) => (
+            <div key={i} className="bg-white/5 border border-white/10 rounded-xl p-4 h-24 animate-pulse" />
+          ))}
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="col-span-12 lg:col-span-5 p-6 bg-red-500/10 border border-red-500/20 rounded-2xl">
+        <p className="text-red-400">Error loading news: {error}. Please check your NEWSDATA_API_KEY in Vercel/Local env.</p>
+      </section>
+    )
+  }
+
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      {MOCK_NEWS.map((news, index) => (
-        <motion.div
-          key={news.id}
-          initial={{ opacity: 0, y: 20 }}
+    <section className="col-span-12 lg:col-span-5 space-y-6">
+      {/* Featured News Card */}
+      {selectedNews && (
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: index * 0.1 }}
-          whileHover={{ scale: 1.02 }}
-          onClick={() => onSelectNews(news)}
-          className="cursor-pointer group bg-slate-900/40 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden hover:border-purple-500/50 transition-all shadow-2xl hover:shadow-purple-500/10"
+          className="group relative bg-white/5 border border-white/10 rounded-2xl overflow-hidden hover:border-white/20 transition-all duration-300 shadow-2xl"
         >
-          <div className="p-6">
-            <div className="flex justify-between items-start mb-4">
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-slate-800/50 text-slate-400 border border-slate-700">
-                {news.category}
+          <div className="aspect-video relative overflow-hidden">
+            <img 
+              src={selectedNews.image} 
+              alt={selectedNews.title}
+              className="object-cover w-full h-full transform group-hover:scale-105 transition-transform duration-700"
+            />
+            <div className="absolute top-4 left-4 flex gap-2">
+              <span className="px-3 py-1 bg-blue-500/90 backdrop-blur-md text-white text-xs font-bold rounded-full shadow-lg">
+                {selectedNews.category}
               </span>
-              <div className="flex gap-2 text-slate-500">
-                <ExternalLink className="w-4 h-4 group-hover:text-white transition-colors" />
-              </div>
-            </div>
-            
-            <h3 className="text-xl font-bold mb-3 group-hover:text-blue-400 transition-colors leading-tight">
-              {news.title}
-            </h3>
-            
-            <p className="text-slate-400 text-sm line-clamp-3 mb-6">
-              {news.summary}
-            </p>
-            
-            <div className="flex justify-between items-center text-xs text-slate-500">
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-300">{news.source}</span>
-                <span>•</span>
-                <span>{news.timestamp}</span>
-              </div>
-              <div className="flex items-center gap-4">
-                <div className="flex items-center gap-1 group/notes">
-                  <MessageSquare className="w-4 h-4 group-hover/notes:text-blue-400 transition-colors" />
-                  <span>12</span>
-                </div>
-                <div className="flex items-center gap-1 group/bias">
-                  <AlertCircle className="w-4 h-4 group-hover/bias:text-red-400 transition-colors" />
-                  <span className="text-red-400/80">Check Bias</span>
-                </div>
-              </div>
+              <span className="px-3 py-1 bg-white/10 backdrop-blur-md text-white text-xs font-medium rounded-full border border-white/20">
+                Live Analysis
+              </span>
             </div>
           </div>
+          
+          <div className="p-6 space-y-3">
+            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-white/60 leading-tight">
+              {selectedNews.title}
+            </h2>
+            <p className="text-white/60 text-sm line-clamp-2 leading-relaxed">
+              {selectedNews.summary}
+            </p>
+          </div>
         </motion.div>
-      ))}
-    </div>
+      )}
+
+      {/* News List */}
+      <div className="space-y-4 h-[500px] overflow-y-auto custom-scrollbar pr-2">
+        {newsList.map((news) => (
+          <motion.div
+            key={news.id}
+            whileHover={{ x: 8 }}
+            onClick={() => handleSelect(news)}
+            className={`cursor-pointer p-4 rounded-xl border transition-all duration-300 flex gap-4 ${
+              selectedNews?.id === news.id 
+                ? 'bg-white/10 border-white/30 shadow-lg' 
+                : 'bg-white/5 border-white/10 hover:bg-white/10'
+            }`}
+          >
+            <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+              <img src={news.image} alt={news.title} className="w-full h-full object-cover" />
+            </div>
+            <div className="space-y-1 py-1 flex-1">
+              <div className="flex justify-between items-start">
+                <span className="text-[10px] uppercase tracking-wider text-blue-400 font-bold">{news.category}</span>
+                <span className="text-[10px] text-white/40">{new Date(news.date).toLocaleDateString()}</span>
+              </div>
+              <h3 className="text-sm font-semibold text-white/90 line-clamp-2 leading-snug">{news.title}</h3>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+    </section>
   )
 }

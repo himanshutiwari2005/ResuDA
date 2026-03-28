@@ -85,7 +85,7 @@ export default function Home() {
                 <span className="px-3 py-1 rounded-md bg-purple-500/10 text-purple-400 text-xs font-bold uppercase tracking-widest border border-purple-500/20">
                   {selectedNews.category}
                 </span>
-                <span className="text-slate-500 text-sm">{selectedNews.source} • {selectedNews.timestamp}</span>
+                <span className="text-slate-500 text-sm">{selectedNews.source} • {new Date(selectedNews.date).toLocaleDateString()}</span>
               </div>
               <h2 className="text-5xl font-black tracking-tighter text-white leading-tight">
                 {selectedNews.title}
