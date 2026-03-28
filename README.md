@@ -1,11 +1,40 @@
-# Monad Blitz Delhi Submission Process
+# ResuDA: Web3 AI Bias & Community Correction
 
-1. Visit the `monad-blitz-delhi` repo (link [here](https://github.com/monad-developers/monad-blitz-delhi)) and fork it.
+**ResuDA** is a decentralized truth-seeking platform for the Monad Blitz hackathon. It utilizes local **Llama 3.1:8b** for initial bias detection and **Monad Testnet** for community-verified corrections.
 
-<img width="1512" alt="Screenshot 2025-06-05 at 1 47 48 PM" src="https://github.com/user-attachments/assets/a837398a-cca4-42cf-b6ff-709b567c9aa9" />
+## Features
+- **AI Bias Check**: Real-time analysis of news articles to identify misinterpreted lines and missing context via local Ollama.
+- **Community Corrections**: Web3 "Community Notes" stored on-chain for transparent, immutable fact-checking.
+- **Monad Integration**: High-throughput transaction handling on the Monad testnet.
+- **On-chain Reputation**: Users gain credibility through verifiable community engagement.
 
-2. Give it your project name, a one-liner description, make sure you are forking `main` branch and click `Create Fork`.
+## Getting Started
 
-<img width="1512" alt="Screenshot 2025-06-05 at 1 48 10 PM" src="https://github.com/user-attachments/assets/62ea369a-de81-4460-8136-e3f9320abfb8" />
+### Prerequisites
+1. **Ollama**: Install [Ollama](https://ollama.com/) and run Llama 3.1:
+   ```bash
+   ollama run llama3.1:8b
+   ```
+2. **Node.js**: Ensure you're on a recent version (v18+).
 
-3. In your fork you can make all the changes you want, add code of your project, create branches, add information to `README.md`, you can change anything and everything.
+### Installation
+1. Navigate to the `frontend/` directory:
+   ```bash
+   cd frontend
+   npm install
+   ```
+2. Start the dev server:
+   ```bash
+   npm run dev
+   ```
+
+## Smart Contracts
+The unified contract `ResuDA.sol` is located in the `smart-contracts/` directory.
+
+## Contributing
+- **AI Engine**: Local Llama 3.1 (via Ollama)
+- **Blockchain**: Monad Testnet (Chain ID 10143)
+- **Frontend**: Next.js 14, Tailwind, Framer Motion
+
+---
+Built for the **Monad Blitz** Hackathon.
