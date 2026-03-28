@@ -26,7 +26,7 @@
 
    ---
 
-   ## What ResuDA Does
+   ## What NewsChecker Does
 
    - Pulls and displays news feed in an editorial UI
    - Runs AI-assisted bias/context analysis
