@@ -49,9 +49,10 @@ contract ResuDA {
         return notesCount;
     }
 
-    function voteNote(uint256 _noteId, bool _isLike) public {
+    function voteNote(uint256 _noteId, bool _isLike) public payable {
         require(_noteId > 0 && _noteId <= notesCount, "Invalid note ID");
         require(!hasVoted[_noteId][msg.sender], "Already voted");
+        require(msg.value == 0.0001 ether, "Must send exactly 0.0001 MONAD to vote");
 
         CorrectionNote storage note = notes[_noteId];
         hasVoted[_noteId][msg.sender] = true;
@@ -59,9 +60,18 @@ contract ResuDA {
         if (_isLike) {
             note.likes++;
             reputation[note.author]++;
+            // Reward the author
+            (bool success, ) = payable(note.author).call{value: msg.value}("");
+            require(success, "Reward transfer failed");
         } else {
             note.dislikes++;
             reputation[note.author]--;
+            // Burn the fee to prevent trolling
+            (bool success, ) = payable(address(0)).call{value: msg.value}("");
+            // Note: address(0) transfer might fail on some chains, but for burning 
+            // 0x000000000000000000000000000000000000dEaD is more standard
+            (success, ) = payable(address(0x000000000000000000000000000000000000dEaD)).call{value: msg.value}("");
+            require(success, "Burn transfer failed");
         }
 
         emit NoteVoted(_noteId, msg.sender, _isLike);

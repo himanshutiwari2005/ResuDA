@@ -3,7 +3,8 @@
 import { useState } from 'react'
 import { useAccount, useReadContract, useWriteContract, useWaitForTransactionReceipt } from 'wagmi'
 import { motion, AnimatePresence } from 'framer-motion'
-import { ThumbsUp, ThumbsDown, Send, User, ShieldCheck, Loader2 } from 'lucide-react'
+import { ThumbsUp, ThumbsDown, Send, User, ShieldCheck, Loader2, Coins, Flame } from 'lucide-react'
+import { parseEther } from 'viem'
 
 const CONTRACT_ADDRESS = '0x1234567890123456789012345678901234567890' // Placeholder
 
@@ -11,7 +12,7 @@ const ABI = [
   {"inputs":[{"internalType":"uint256","name":"_newsId","type":"uint256"}],"name":"getNotesForNews","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"},
   {"inputs":[{"internalType":"uint256","name":"_noteId","type":"uint256"}],"name":"notes","outputs":[{"internalType":"uint256","name":"id","type":"uint256"},{"internalType":"uint256","name":"newsId","type":"uint256"},{"internalType":"string","name":"content","type":"string"},{"internalType":"address","name":"author","type":"address"},{"internalType":"uint256","name":"timestamp","type":"uint256"},{"internalType":"uint256","name":"likes","type":"uint256"},{"internalType":"uint256","name":"dislikes","type":"uint256"}],"stateMutability":"view","type":"function"},
   {"inputs":[{"internalType":"uint256","name":"_newsId","type":"uint256"},{"internalType":"string","name":"_content","type":"string"}],"name":"addNote","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"nonpayable","type":"function"},
-  {"inputs":[{"internalType":"uint256","name":"_noteId","type":"uint256"},{"internalType":"bool","name":"_isLike","type":"bool"}],"name":"voteNote","outputs":[],"stateMutability":"nonpayable","type":"function"}
+  {"inputs":[{"internalType":"uint256","name":"_noteId","type":"uint256"},{"internalType":"bool","name":"_isLike","type":"bool"}],"name":"voteNote","outputs":[],"stateMutability":"payable","type":"function"}
 ] as const
 
 const MOCK_NOTES_DATABASE: Record<number, any[]> = {
@@ -50,6 +51,7 @@ export function CommunityNotes({ newsId }: { newsId: number }) {
       abi: ABI,
       functionName: 'voteNote',
       args: [BigInt(noteId), isLike],
+      value: parseEther('0.0001')
     })
   }
 
@@ -113,24 +115,39 @@ export function CommunityNotes({ newsId }: { newsId: number }) {
             </p>
 
             <div className="flex items-center gap-6">
-              <button 
-                onClick={() => handleVote(note.id, true)}
-                className="flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors group"
-              >
-                <div className="p-2 rounded-lg bg-emerald-400/0 group-hover:bg-emerald-400/10 transition-colors">
-                  <ThumbsUp className="w-5 h-5" />
+              <div className="relative group/vote">
+                <button 
+                  onClick={() => handleVote(note.id, true)}
+                  disabled={isPending}
+                  className="flex items-center gap-2 text-slate-400 hover:text-emerald-400 transition-colors group/btn"
+                >
+                  <div className="p-2 rounded-lg bg-emerald-400/0 group-hover/btn:bg-emerald-400/10 transition-colors">
+                    <ThumbsUp className="w-5 h-5" />
+                  </div>
+                  <span className="font-bold">{note.likes}</span>
+                </button>
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-[10px] text-emerald-400 rounded opacity-0 group-hover/vote:opacity-100 transition-opacity whitespace-nowrap border border-emerald-500/20 flex items-center gap-1">
+                  <Coins className="w-3 h-3" />
+                  Reward: 0.0001 MON
                 </div>
-                <span className="font-bold">{note.likes}</span>
-              </button>
-              <button 
-                onClick={() => handleVote(note.id, false)}
-                className="flex items-center gap-2 text-slate-400 hover:text-red-400 transition-colors group"
-              >
-                <div className="p-2 rounded-lg bg-red-400/0 group-hover:bg-red-400/10 transition-colors">
-                  <ThumbsDown className="w-5 h-5" />
+              </div>
+
+              <div className="relative group/vote">
+                <button 
+                  onClick={() => handleVote(note.id, false)}
+                  disabled={isPending}
+                  className="flex items-center gap-2 text-slate-400 hover:text-red-400 transition-colors group/btn"
+                >
+                  <div className="p-2 rounded-lg bg-red-400/0 group-hover/btn:bg-red-400/10 transition-colors">
+                    <ThumbsDown className="w-5 h-5" />
+                  </div>
+                  <span className="font-bold">{note.dislikes}</span>
+                </button>
+                <div className="absolute -top-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-[10px] text-red-400 rounded opacity-0 group-hover/vote:opacity-100 transition-opacity whitespace-nowrap border border-red-500/20 flex items-center gap-1">
+                  <Flame className="w-3 h-3" />
+                  Burn: 0.0001 MON
                 </div>
-                <span className="font-bold">{note.dislikes}</span>
-              </button>
+              </div>
             </div>
           </motion.div>
         ))}
